@@ -1,0 +1,12 @@
+@import "~bootstrap/dist/css/bootstrap.css";
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #AEE2FF !important; }
+.card-width {
+    max-width: 400px;
+    width: 100%;
+}
+
+mat-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 10px !important;
+}

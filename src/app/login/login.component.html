@@ -1,0 +1,30 @@
+<div class="container d-flex justify-content-center align-items-center">
+    <mat-card class="mt-5 card-width">
+        <mat-card-content>
+            <h2 class="text-center">Connexion</h2>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="outline" class="form-field" style="width: 100%">
+                    <mat-label>Email:</mat-label>
+                    <input type="email" matInput formControlName="email" required>
+                    <mat-error *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
+                        <span *ngIf="loginForm.get('email')?.errors?.['required']">L'email est requis.</span>
+                        <span *ngIf="loginForm.get('email')?.errors?.['email']">L'email est invalide.</span>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="form-field" style="width: 100%">
+                    <mat-label>Mot de passe:</mat-label>
+                    <input type="password" matInput formControlName="password" required>
+                    <mat-error *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)">
+                        <span *ngIf="loginForm.get('password')?.errors?.['required']">Le mot de passe est requis.</span>
+                    </mat-error>
+                </mat-form-field>
+                <button type="submit" mat-raised-button color="primary" class="btn btn-primary mt-3 mx-auto d-block" [disabled]="!loginForm.valid">
+                    S'inscrire
+                </button>
+                <div class="error-message mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+            </form>
+  
+            <p class="text-center mt-3">Vous n'avez pas un compte déjà? <a (click)="goToRegister()">Inscription</a></p>
+        </mat-card-content>
+    </mat-card>
+</div>

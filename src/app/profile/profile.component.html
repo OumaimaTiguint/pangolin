@@ -1,0 +1,93 @@
+<div *ngIf="loading" class="d-flex justify-content-center align-items-center loading-overlay">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+<div class="container mt-5">
+  	<mat-card>
+    	<mat-card-header class="d-flex justify-content-between w-100">
+			<mat-card-title>Profil</mat-card-title>
+			<div class="d-flex flex-row">
+				<button mat-icon-button (click)="editProfile()" *ngIf="!editing">
+					<mat-icon>edit</mat-icon>
+				</button>
+				<button mat-icon-button (click)="updateUser()" *ngIf="editing">
+					<mat-icon>save</mat-icon>
+				</button>
+				<button mat-icon-button (click)="logout()">
+					<mat-icon>exit_to_app</mat-icon>
+				</button>
+			</div>
+		</mat-card-header>
+    	<mat-card-content>
+			<div class="row">
+				<div class="col-md-6 d-flex justify-content-center">
+				  	<h4 class="font-weight-bold">Nom:</h4>
+				  	<p class="user-info">{{ user?.name }}</p>
+				</div>
+				<div class="col-md-6 d-flex justify-content-center">
+					<h4 *ngIf="!editing" class="font-weight-bold">Rôle:</h4>
+					<p *ngIf="!editing" class="user-info">{{ user?.role || 'Pas de rôle' }}</p>
+					<div class="form-group" *ngIf="editing">
+					  <label for="role">Rôle</label>
+					  <select class="form-control" id="role" [(ngModel)]="user.role" name="role">
+							<option *ngFor="let role of roles" [value]="role.value">{{ role.name }}</option>
+					  </select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12 d-flex justify-content-center">
+					<h4 class="font-weight-bold">Email:</h4>
+				  	<p class="user-info">{{ user?.email }}</p>
+				</div>
+			</div>
+    	</mat-card-content>
+  	</mat-card>
+
+  	<div class="row mt-5">
+    	<div class="col-md-6">
+      		<mat-card>
+				<mat-card-header>
+					<mat-card-title class="text-center">Ajouter des ami(e)s</mat-card-title>
+			  	</mat-card-header>
+        		<mat-card-content>
+          			<mat-list *ngIf="allUsers && allUsers.length > 0">
+            			<mat-list-item *ngFor="let u of allUsers">
+							<div class="w-100 d-flex justify-content-between align-items-center">
+              					<span class="flex-grow-1">{{ u?.name }}</span>
+							  	<button mat-icon-button color="primary" (click)="addToFriends(u)">
+                					<mat-icon>add</mat-icon>
+              					</button>
+							</div>
+            			</mat-list-item>
+          			</mat-list>
+        		</mat-card-content>
+      		</mat-card>
+    	</div>
+    	<div class="col-md-6">
+      		<mat-card>
+        		<mat-card-header>
+          			<mat-card-title class="text-center">Ami(e)s</mat-card-title>
+        		</mat-card-header>
+        		<mat-card-content>
+					<div *ngIf="user?.friends.length == 0">
+						Pas d'ami(e)s
+					</div>
+          			<ul class="list-group" *ngIf="user?.friends.length > 0">
+            			<li class="list-group-item" *ngFor="let friend of user?.friends">
+							<div class="friend-item d-flex justify-content-between align-items-center">
+								<span>{{ friend?.name }}</span>
+								<div class="friend-actions">
+									<button mat-button color="warn" (click)="deleteFriend(friend)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</div>
+							</div>
+            			</li>
+          			</ul>
+        		</mat-card-content>
+      		</mat-card>
+    	</div>
+  	</div>
+</div>

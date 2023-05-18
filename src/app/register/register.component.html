@@ -1,0 +1,51 @@
+<div class="container d-flex justify-content-center align-items-center">
+    <mat-card class="mt-5 card-width">
+        <mat-card-content>
+            <h2 class="text-center">Inscription</h2>
+            <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="outline" class="form-field" style="width: 100%">
+                    <mat-label>Nom:</mat-label>
+                    <input type="text" matInput formControlName="name" required>
+                    <mat-error *ngIf="signupForm.get('name')?.invalid && (signupForm.get('name')?.dirty || signupForm.get('name')?.touched)">
+                        <span *ngIf="signupForm.get('name')?.errors?.['required']">Le nom est requis.</span>
+                    </mat-error>
+                </mat-form-field>
+  
+                <mat-form-field appearance="outline" class="form-field" style="width: 100%">
+                    <mat-label>Rôle</mat-label>
+                    <mat-select formControlName="role" required>
+                        <mat-option *ngFor="let role of roles" [value]="role.value">
+                            {{ role.name }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="signupForm.get('role')?.invalid && (signupForm.get('role')?.dirty || signupForm.get('role')?.touched)">
+                        <span *ngIf="signupForm.get('role')?.errors?.['required']">Le rôle est requis.</span>
+                    </mat-error>
+                </mat-form-field>
+  
+                <mat-form-field appearance="outline" class="form-field" style="width: 100%">
+                    <mat-label>Email:</mat-label>
+                    <input type="email" matInput formControlName="email" required>
+                    <mat-error *ngIf="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)">
+                        <span *ngIf="signupForm.get('email')?.errors?.['required']">L'email est requis.</span>
+                        <span *ngIf="signupForm.get('email')?.errors?.['email']">L'email est invalide.</span>
+                    </mat-error>
+                </mat-form-field>
+  
+                <mat-form-field appearance="outline" class="form-field" style="width: 100%">
+                    <mat-label>Mot de passe:</mat-label>
+                    <input type="password" matInput formControlName="password" required>
+                    <mat-error *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)">
+                        <span *ngIf="signupForm.get('password')?.errors?.['required']">Le mot de passe est requis.</span>
+                    </mat-error>
+                </mat-form-field>
+  
+                <button type="submit" mat-raised-button color="primary" class="btn btn-primary mt-3 mx-auto d-block" [disabled]="!signupForm.valid">
+                    S'inscrire
+                </button>
+                <div class="error-message mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+            </form>
+            <p class="text-center mt-3">Vous avez déjà un compte? <a (click)="goToLogin()">Se connecter</a></p>
+        </mat-card-content>
+    </mat-card>
+</div>
