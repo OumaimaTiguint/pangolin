@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth/auth.service';
 import Pangolin, { PangolinFriend, Role } from '../models/pangolin';
+import { Observable, Subject, finalize, startWith, switchMap } from 'rxjs';
 
 @Component({
   	selector: 'app-profile',
@@ -12,7 +13,7 @@ import Pangolin, { PangolinFriend, Role } from '../models/pangolin';
 export class ProfileComponent implements OnInit {
 	user: any;
 	userId!: string;
-	allUsers: Pangolin[] = [];
+	allUsers$: Observable<Pangolin[] | any> | undefined;
 	roles: any[] = [
 		{value: Role.guerrier, name: 'Guerrier'},
 		{value: Role.alchimiste, name: 'Alchimiste'},
@@ -22,6 +23,7 @@ export class ProfileComponent implements OnInit {
 	];
 	editing: boolean = false;
 	loading: boolean = false;
+	private userUpdateSubject = new Subject<void>();
 
   	constructor(private route: ActivatedRoute,
 				private authService: AuthService,
@@ -31,14 +33,12 @@ export class ProfileComponent implements OnInit {
 	addToFriends(u: Pangolin) {
 		this.user.friends.push({_id: u._id, name: u.name, email: u.email, role: u.role});
 		this.updateUser();
-		this.getUsers(this.userId);
 	}
 
 	deleteFriend(friend: PangolinFriend) {
 		const index = this.user.friends.findIndex((f:PangolinFriend)=> f._id === friend._id);
 		this.user.friends.splice(index, 1);
 		this.updateUser();
-		this.getUsers(this.userId);
 	}
 
 	updateUser() {
@@ -47,6 +47,7 @@ export class ProfileComponent implements OnInit {
 			.subscribe((response:any) => {
 				console.log(response)
 				this.editing = false;
+				this.userUpdateSubject.next();
 			}, (error) => {
 				console.log(error)
 			}, () => {
@@ -65,28 +66,32 @@ export class ProfileComponent implements OnInit {
 
 	getUsers(id: any) {
 		this.loading = true;
-		this.userService.getAllUsers(id)
-		.subscribe((res: any)=> {
-			this.allUsers = res;
-		}, (error) => {
-			console.log(error);
-		}, () => {
-			this.loading = false;
-		});
+		this.allUsers$ = this.userUpdateSubject.pipe(
+			startWith(null),
+			switchMap(() =>
+			  	this.userService.getAllUsers(id).pipe(
+					finalize(() => {
+				  		this.loading = false;
+					})
+			  	)
+			)
+		);
 	}
 
   	ngOnInit(): void {
 		this.loading = true;
 		this.userId = this.route.snapshot.queryParams['userId'];
-		this.getUsers(this.userId);
 		this.userService.getUserById(this.userId)
-			.subscribe((response: any) => {
+		  	.pipe(
+				finalize(() => {
+			  		this.loading = false;
+				})
+		  	).subscribe((response: any) => {
 				this.user = response;
-			}, (error) => {
+				this.getUsers(this.userId);
+		  	}, (error) => {
 				console.log(error);
-			}, () => {
-				this.loading = false;
-			});
-  	}
+		  	});
+	}
 
 }
