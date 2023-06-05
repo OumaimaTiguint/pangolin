@@ -1,0 +1,6 @@
+<div matDialog>
+	<h1 mat-dialog-title>Add new friend</h1>
+	<div mat-dialog-content>
+        <app-register (newItemEvent)="newUserId($event)" [userId]="data.userId"></app-register>
+	</div>
+</div>

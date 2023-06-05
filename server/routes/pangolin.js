@@ -6,7 +6,7 @@ router.route('/inscription').post((req, res) => {
     const newPangolin = new Pangolin({ name, role, email, password });
 
     newPangolin.save()
-        .then(() => res.json('Pangolin added!'))
+        .then((user) => res.json({message:'Pangolin added!', user: user}))
         .catch((err) => res.status(400).json('Error: ' + err));
 })
 

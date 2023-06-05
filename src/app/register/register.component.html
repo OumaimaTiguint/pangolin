@@ -1,7 +1,7 @@
 <div class="container d-flex justify-content-center align-items-center">
     <mat-card class="mt-5 card-width">
         <mat-card-content>
-            <h2 class="text-center">Inscription</h2>
+            <h2 *ngIf="!isLoggedIn" class="text-center">Inscription</h2>
             <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
                 <mat-form-field appearance="outline" class="form-field" style="width: 100%">
                     <mat-label>Nom:</mat-label>
@@ -40,12 +40,15 @@
                     </mat-error>
                 </mat-form-field>
   
-                <button type="submit" mat-raised-button color="primary" class="btn btn-primary mt-3 mx-auto d-block" [disabled]="!signupForm.valid">
+                <button *ngIf="!isLoggedIn" type="submit" mat-raised-button color="primary" class="btn btn-primary mt-3 mx-auto d-block" [disabled]="!signupForm.valid">
                     S'inscrire
+                </button>
+                <button *ngIf="isLoggedIn" type="submit" mat-raised-button color="primary" class="btn btn-primary mt-3 mx-auto d-block" [disabled]="!signupForm.valid">
+                    Ajouter un(e) ami(e)
                 </button>
                 <div class="error-message mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
             </form>
-            <p class="text-center mt-3">Vous avez déjà un compte? <a (click)="goToLogin()">Se connecter</a></p>
+            <p *ngIf="!isLoggedIn" class="text-center mt-3">Vous avez déjà un compte? <a (click)="goToLogin()">Se connecter</a></p>
         </mat-card-content>
     </mat-card>
 </div>

@@ -83,6 +83,12 @@
           			<mat-card-title class="text-center">Ami(e)s</mat-card-title>
         		</mat-card-header>
         		<mat-card-content>
+					<button mat-raised-button 
+						    color="primary" 
+							class="btn btn-primary mt-3 mx-auto d-block" 
+							(click)="addNewFriend()">
+						Ajouter un(e) ami(e) pas encore inscrit
+					</button>
 					<div *ngIf="user?.friends.length == 0">
 						Pas d'ami(e)s
 					</div>

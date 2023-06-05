@@ -4,6 +4,8 @@ import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth/auth.service';
 import Pangolin, { PangolinFriend, Role } from '../models/pangolin';
 import { Observable, Subject, finalize, startWith, switchMap } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   	selector: 'app-profile',
@@ -28,11 +30,26 @@ export class ProfileComponent implements OnInit {
   	constructor(private route: ActivatedRoute,
 				private authService: AuthService,
 				private router: Router,
-				private userService: UserService) { }
+				private userService: UserService,
+				private dialog: MatDialog)
+			{
+	}
 	
 	addToFriends(u: Pangolin) {
 		this.user.friends.push({_id: u._id, name: u.name, email: u.email, role: u.role});
 		this.updateUser();
+	}
+
+	addNewFriend() {
+		const dialogRef = this.dialog.open(DialogComponent, { 
+			width: '90%',
+			maxWidth: '520px',
+			data: {userId: this.userId}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			this.addToFriends(result)
+		});
 	}
 
 	deleteFriend(friend: PangolinFriend) {
@@ -45,7 +62,6 @@ export class ProfileComponent implements OnInit {
 		this.loading = true;
 		this.userService.updateUser(this.userId, this.user.role, this.user.friends)
 			.subscribe((response:any) => {
-				console.log(response)
 				this.editing = false;
 				this.userUpdateSubject.next();
 			}, (error) => {

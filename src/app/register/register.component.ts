@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { Role } from '../models/pangolin';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   	selector: 'app-register',
@@ -11,6 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
 	errorMessage: string | undefined;
+	isLoggedIn: boolean = false;
 	roles: any[] = [
 		{value: Role.guerrier, name: 'Guerrier'},
 		{value: Role.alchimiste, name: 'Alchimiste'},
@@ -25,6 +27,8 @@ export class RegisterComponent implements OnInit {
 		password: ''
 	};
 	signupForm: FormGroup;
+	@Input() userId: string | undefined;
+	@Output() newItemEvent = new EventEmitter<string>();
 
   	constructor(private authervice: AuthService,
 				private router: Router,
@@ -45,10 +49,24 @@ export class RegisterComponent implements OnInit {
 		if (this.signupForm.valid) {
 			this.authervice.register(this.signupForm?.get('name')?.value, this.signupForm?.get('role')?.value, this.signupForm?.get('email')?.value, this.signupForm?.get('password')?.value)
 				.subscribe((response:any) => {
-					this.goToLogin();
-				}, error => {
-					console.log({ error });
-				});
+					if(!this.userId) {
+						const userId = response.user._id;
+						const navigationExtras: NavigationExtras = {
+							queryParams: {
+								  userId: userId
+							}
+						};
+				
+						this.router.navigate(['/profile'], navigationExtras);
+					} else {
+						console.log(response);
+						this.newItemEvent.emit(response);
+					}
+					
+					}, error => {
+						console.log({ error });
+					});
+			
 		} else {
 			this.errorMessage = "Veuillez remplir tous les champs requis correctement.";
 		} 
@@ -56,6 +74,7 @@ export class RegisterComponent implements OnInit {
 	}
 
   	ngOnInit(): void {
+		this.authervice.isAuthenticated().subscribe(res => this.isLoggedIn = res);
   	}
 
 }

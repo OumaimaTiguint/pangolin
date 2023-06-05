@@ -9,10 +9,17 @@ import { UserService } from './services/user.service';
 import { LoginModule } from './login/login.module';
 import { ProfileModule } from './profile/profile.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DialogComponent } from './dialog/dialog.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   	declarations: [
-    	AppComponent
+    	AppComponent,
+     	DialogComponent
   	],
   	imports: [
     	BrowserModule,
@@ -21,7 +28,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 		LoginModule,
 		ProfileModule,
 		HttpClientModule,
-		BrowserAnimationsModule
+		BrowserAnimationsModule,
+		MatButtonModule,
+		MatSelectModule,
+		MatDialogModule,
+		ReactiveFormsModule,
+		MatInputModule,
+		MatButtonModule,
+		FormsModule
   	],
   	providers: [
 		UserService
